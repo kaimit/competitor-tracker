@@ -1,10 +1,10 @@
 # AI Model Release Tracker
 
-A tool to monitor and immediately notify you about new model releases from AI competitors.
+A tool to monitor and immediately notify you about new model releases from AI competitors including OpenAI, Anthropic, Google DeepMind, xAI, Meta AI, DeepSeek, Baidu, and Qwen.
 
 ## Overview
 
-This service continuously monitors various sources for announcements of new AI models from competitors and sends real-time notifications when a new model is detected.
+This service continuously monitors official websites, GitHub repositories, and HuggingFace model releases for announcements of new AI models from major competitors and sends real-time notifications when a new model is detected.
 
 ## Key Features
 

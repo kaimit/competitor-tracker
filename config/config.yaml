@@ -7,82 +7,148 @@ general:
   log_level: "INFO"
   check_interval_seconds: 3600  # 1 hour
   timezone: "UTC"
+  
+  # Enable/disable different source types globally
+  sources_enabled:
+    website: true       # Company official websites and blogs
+    github: true        # GitHub repositories
+    huggingface: true   # HuggingFace model releases
+    twitter: false      # Twitter/X accounts
+    arxiv: false        # Research papers
+    news: false         # Tech news sites
+    reddit: false       # Reddit communities
 
 # Companies to monitor
 companies:
   - name: "OpenAI"
+    enabled: true
     priority: 1
     sources:
       - type: "website"
         url: "https://openai.com/blog"
         selector: ".post-card"
-      - type: "twitter"
-        accounts: ["OpenAI", "sama"]
+      - type: "website" 
+        url: "https://openai.com/index/introducing"
+        selector: ".article-card"
       - type: "github"
         repos: ["openai/openai-python"]
+      - type: "huggingface"
+        orgs: ["openai"]
   
   - name: "Anthropic"
+    enabled: true
     priority: 1
     sources:
       - type: "website"
         url: "https://www.anthropic.com/news"
         selector: ".news-item"
-      - type: "twitter"
-        accounts: ["AnthropicAI", "darioamodei"]
-  
-  - name: "Meta AI"
-    priority: 1
-    sources:
-      - type: "website"
-        url: "https://ai.meta.com/blog/"
-        selector: ".blog-post-card"
-      - type: "twitter"
-        accounts: ["MetaAI", "ylecun"]
-      - type: "github"
-        repos: ["facebookresearch/llama"]
+      - type: "huggingface"
+        orgs: ["anthropic"]
   
   - name: "Google DeepMind"
+    enabled: true
     priority: 1
     sources:
       - type: "website"
         url: "https://deepmind.google/blog/"
         selector: ".blog-card"
-      - type: "twitter"
-        accounts: ["DeepMind"]
+      - type: "github"
+        repos: ["google-deepmind/gemma", "google-deepmind/mctx"]
+      - type: "huggingface"
+        orgs: ["google", "google-deepmind"]
+  
+  - name: "xAI"
+    enabled: true
+    priority: 1
+    sources:
+      - type: "website"
+        url: "https://x.ai/"
+        selector: ".news-item, .blog-post"
+      - type: "github"
+        repos: ["xai-org/grok-1"]
+      - type: "huggingface"
+        orgs: ["xai-org"]
+  
+  - name: "Meta AI"
+    enabled: true
+    priority: 1
+    sources:
+      - type: "website"
+        url: "https://ai.meta.com/blog/"
+        selector: ".blog-post-card"
+      - type: "github"
+        repos: ["facebookresearch/llama", "facebookresearch/audiocraft"]
+      - type: "huggingface"
+        orgs: ["meta-llama", "facebook", "facebookresearch"]
   
   - name: "DeepSeek"
+    enabled: true
     priority: 1
     sources:
       - type: "website"
         url: "https://deepseek.ai/blog"
         selector: ".blog-post"
       - type: "github"
-        repos: ["deepseek-ai/deepseek-coder", "deepseek-ai/deepseek-llm"]
-
-# Additional sources
-sources:
-  papers:
-    - name: "arXiv CS.CL"
-      url: "https://arxiv.org/list/cs.CL/recent"
-    - name: "arXiv CS.AI"
-      url: "https://arxiv.org/list/cs.AI/recent"
+        repos: ["deepseek-ai/deepseek-coder", "deepseek-ai/deepseek-llm", "deepseek-ai/deepseek-vl"]
+      - type: "huggingface"
+        orgs: ["deepseek-ai"]
   
-  platforms:
-    - name: "HuggingFace"
-      url: "https://huggingface.co/models?sort=modified"
-      check_interval_seconds: 21600  # 6 hours
+  - name: "Baidu"
+    enabled: true
+    priority: 1
+    sources:
+      - type: "website"
+        url: "https://www.baidu.com/research"
+        selector: ".research-item, .news-item"
+      - type: "github"
+        repos: ["PaddlePaddle/PaddleNLP", "baidu-research/plato"]
+      - type: "huggingface"
+        orgs: ["baidu", "BAAI"]
   
-  news:
-    - name: "TechCrunch AI"
-      url: "https://techcrunch.com/category/artificial-intelligence/"
-    - name: "The Verge AI"
-      url: "https://www.theverge.com/ai-artificial-intelligence"
+  - name: "Qwen"
+    enabled: true
+    priority: 1
+    sources:
+      - type: "website"
+        url: "https://qwenlm.github.io/"
+        selector: ".content-block"
+      - type: "github"
+        repos: ["QwenLM/Qwen", "QwenLM/Qwen-Agent"]
+      - type: "huggingface"
+        orgs: ["Qwen"]
+        
+  # Template for adding new companies
+  - name: "New Company Template"
+    enabled: false  # Set to true to enable
+    priority: 2
+    sources:
+      - type: "website"
+        url: "https://example.com/blog"
+        selector: ".blog-post"
+      - type: "github"
+        repos: ["example/repo1", "example/repo2"]
+      - type: "huggingface"
+        orgs: ["example-org"]
 
-  reddit:
-    - name: "r/MachineLearning"
-      url: "https://www.reddit.com/r/MachineLearning/new/"
-    - name: "r/LocalLLaMA"
-      url: "https://www.reddit.com/r/LocalLLaMA/new/"
+# HuggingFace monitoring
+huggingface:
+  global_monitoring:
+    enabled: true
+    # Monitor trending models and recently updated models
+    urls:
+      - "https://huggingface.co/models?sort=trending"
+      - "https://huggingface.co/models?sort=modified"
+    check_interval_seconds: 14400  # 4 hours
+  
+  # Keywords to detect model releases in model descriptions or READMEs
+  model_keywords:
+    - "new release"
+    - "introducing"
+    - "announcing"
+    - "version"
+    - "billion parameters"
+    - "language model"
+    - "multimodal"
 
 # NLP Processing
 nlp:
