@@ -183,16 +183,16 @@ database:
 notifications:
   email:
     enabled: true
-    smtp_server: "smtp.example.com"
-    smtp_port: 587
-    from_address: "tracker@example.com"
-    to_addresses: ["you@example.com"]
+    smtp_server_env: "SMTP_SERVER"    # Will be loaded from environment variable
+    smtp_port_env: "SMTP_PORT"        # Will be loaded from environment variable
+    from_address_env: "EMAIL_USERNAME"  # Use the same email for sending
+    to_addresses_env: "NOTIFY_EMAIL"  # Will be loaded from environment variable
     use_tls: true
     username_env: "EMAIL_USERNAME"
     password_env: "EMAIL_PASSWORD"
   
   slack:
-    enabled: true
+    enabled: false  # Set to true if you want to use Slack
     webhook_url_env: "SLACK_WEBHOOK_URL"
     channel: "#ai-model-releases"
   

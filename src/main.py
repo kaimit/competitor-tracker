@@ -42,9 +42,20 @@ class ModelReleaseTracker:
     
     def _load_config(self, config_path: str) -> Dict:
         """Load configuration from file."""
-        # TODO: Implement configuration loading
+        import yaml
+        from dotenv import load_dotenv
+        
+        # Load environment variables
+        load_dotenv()
+        
         logger.info(f"Loading configuration from {config_path}")
-        return {"sample": "config"}
+        try:
+            with open(config_path, 'r') as f:
+                config = yaml.safe_load(f)
+            return config
+        except Exception as e:
+            logger.error(f"Error loading configuration: {str(e)}")
+            return {}
     
     def _initialize_sources(self) -> List:
         """Initialize all data sources based on configuration."""
@@ -60,9 +71,30 @@ class ModelReleaseTracker:
     
     def _initialize_notifiers(self) -> List:
         """Initialize all notification channels based on configuration."""
-        # TODO: Implement notifier initialization
         logger.info("Initializing notifiers")
-        return []
+        notifiers = []
+        
+        # Get notification configurations
+        notification_config = self.config.get('notifications', {})
+        
+        # Initialize email notifier if enabled
+        email_config = notification_config.get('email', {})
+        if email_config.get('enabled', False):
+            try:
+                from notifiers.email_notifier import EmailNotifier
+                email_notifier = EmailNotifier(email_config)
+                notifiers.append(('email', email_notifier))
+                logger.info("Email notifier initialized")
+            except Exception as e:
+                logger.error(f"Error initializing email notifier: {str(e)}")
+        
+        # Initialize Slack notifier if enabled
+        slack_config = notification_config.get('slack', {})
+        if slack_config.get('enabled', False):
+            # TODO: Implement Slack notifier
+            logger.info("Slack notifier configured but not yet implemented")
+        
+        return notifiers
     
     def _initialize_database(self) -> Any:
         """Initialize database connection."""
@@ -112,8 +144,24 @@ class ModelReleaseTracker:
     
     def _send_notifications(self, releases: List[Dict]) -> None:
         """Send notifications through all configured channels."""
-        # TODO: Implement notification sending
-        pass
+        if not self.notifiers:
+            logger.warning("No notifiers configured, skipping notifications")
+            return
+            
+        for release in releases:
+            logger.info(f"Sending notifications for: {release.get('title', 'Unknown Model')}")
+            
+            for notifier_type, notifier in self.notifiers:
+                try:
+                    success = notifier.send_notification(release)
+                    if success:
+                        logger.info(f"Notification sent via {notifier_type}")
+                    else:
+                        logger.warning(f"Failed to send notification via {notifier_type}")
+                except Exception as e:
+                    logger.error(f"Error sending notification via {notifier_type}: {str(e)}")
+        
+        logger.info(f"Notifications sent for {len(releases)} model releases")
     
     def _update_database(self, releases: List[Dict]) -> None:
         """Update the database with new releases."""
