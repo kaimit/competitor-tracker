@@ -1,0 +1,153 @@
+# AI Model Release Tracker Configuration
+
+# General settings
+general:
+  name: "AI Model Release Tracker"
+  version: "0.1.0"
+  log_level: "INFO"
+  check_interval_seconds: 3600  # 1 hour
+  timezone: "UTC"
+
+# Companies to monitor
+companies:
+  - name: "OpenAI"
+    priority: 1
+    sources:
+      - type: "website"
+        url: "https://openai.com/blog"
+        selector: ".post-card"
+      - type: "twitter"
+        accounts: ["OpenAI", "sama"]
+      - type: "github"
+        repos: ["openai/openai-python"]
+  
+  - name: "Anthropic"
+    priority: 1
+    sources:
+      - type: "website"
+        url: "https://www.anthropic.com/news"
+        selector: ".news-item"
+      - type: "twitter"
+        accounts: ["AnthropicAI", "darioamodei"]
+  
+  - name: "Meta AI"
+    priority: 1
+    sources:
+      - type: "website"
+        url: "https://ai.meta.com/blog/"
+        selector: ".blog-post-card"
+      - type: "twitter"
+        accounts: ["MetaAI", "ylecun"]
+      - type: "github"
+        repos: ["facebookresearch/llama"]
+  
+  - name: "Google DeepMind"
+    priority: 1
+    sources:
+      - type: "website"
+        url: "https://deepmind.google/blog/"
+        selector: ".blog-card"
+      - type: "twitter"
+        accounts: ["DeepMind"]
+  
+  - name: "DeepSeek"
+    priority: 1
+    sources:
+      - type: "website"
+        url: "https://deepseek.ai/blog"
+        selector: ".blog-post"
+      - type: "github"
+        repos: ["deepseek-ai/deepseek-coder", "deepseek-ai/deepseek-llm"]
+
+# Additional sources
+sources:
+  papers:
+    - name: "arXiv CS.CL"
+      url: "https://arxiv.org/list/cs.CL/recent"
+    - name: "arXiv CS.AI"
+      url: "https://arxiv.org/list/cs.AI/recent"
+  
+  platforms:
+    - name: "HuggingFace"
+      url: "https://huggingface.co/models?sort=modified"
+      check_interval_seconds: 21600  # 6 hours
+  
+  news:
+    - name: "TechCrunch AI"
+      url: "https://techcrunch.com/category/artificial-intelligence/"
+    - name: "The Verge AI"
+      url: "https://www.theverge.com/ai-artificial-intelligence"
+
+  reddit:
+    - name: "r/MachineLearning"
+      url: "https://www.reddit.com/r/MachineLearning/new/"
+    - name: "r/LocalLLaMA"
+      url: "https://www.reddit.com/r/LocalLLaMA/new/"
+
+# NLP Processing
+nlp:
+  model_path: "models/bert-base-uncased"
+  threshold: 0.75
+  keywords:
+    - "new model"
+    - "release"
+    - "launched"
+    - "introducing"
+    - "announcing"
+    - "unveil"
+  models:
+    - "llm"
+    - "language model"
+    - "large language model"
+    - "multimodal"
+    - "vision language model"
+    - "vision model"
+
+# Database
+database:
+  type: "postgresql"
+  host: "localhost"
+  port: 5432
+  name: "model_tracker"
+  user: "tracker_user"
+  password_env: "DB_PASSWORD"  # Set as environment variable
+  table_prefix: "tracker_"
+
+# Notifications
+notifications:
+  email:
+    enabled: true
+    smtp_server: "smtp.example.com"
+    smtp_port: 587
+    from_address: "tracker@example.com"
+    to_addresses: ["you@example.com"]
+    use_tls: true
+    username_env: "EMAIL_USERNAME"
+    password_env: "EMAIL_PASSWORD"
+  
+  slack:
+    enabled: true
+    webhook_url_env: "SLACK_WEBHOOK_URL"
+    channel: "#ai-model-releases"
+  
+  discord:
+    enabled: false
+    webhook_url_env: "DISCORD_WEBHOOK_URL"
+  
+  sms:
+    enabled: false
+    service: "twilio"
+    account_sid_env: "TWILIO_ACCOUNT_SID"
+    auth_token_env: "TWILIO_AUTH_TOKEN"
+    from_number: "+15551234567"
+    to_numbers: ["+15557654321"]
+    high_priority_only: true  # Only send SMS for priority 1 releases
+
+# Dashboard
+dashboard:
+  enabled: true
+  host: "0.0.0.0"
+  port: 8080
+  secret_key_env: "DASHBOARD_SECRET_KEY"
+  admin_username: "admin"
+  admin_password_env: "DASHBOARD_ADMIN_PASSWORD"
